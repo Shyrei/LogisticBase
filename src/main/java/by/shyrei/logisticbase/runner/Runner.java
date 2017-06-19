@@ -1,6 +1,7 @@
 package by.shyrei.logisticbase.runner;
 
 import by.shyrei.logisticbase.creator.TruckQueueCreator;
+import by.shyrei.logisticbase.entity.Base;
 import by.shyrei.logisticbase.entity.Truck;
 import java.util.ArrayDeque;
 
@@ -19,5 +20,6 @@ public class Runner {
         while (trucks.peek() != null) {
             trucks.poll().start();
         }
+
     }
 }

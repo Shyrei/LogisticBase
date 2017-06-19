@@ -2,8 +2,9 @@ package by.shyrei.logisticbase.creator;
 
 import by.shyrei.logisticbase.entity.Truck;
 import by.shyrei.logisticbase.service.ConfigurationManager;
-import by.shyrei.logisticbase.service.IdTruckGenerator;
+import by.shyrei.logisticbase.service.IdGenerator;
 import by.shyrei.logisticbase.truckstate.GoToBase;
+
 import java.util.ArrayDeque;
 import java.util.Random;
 
@@ -14,17 +15,13 @@ import java.util.Random;
  */
 public class TruckQueueCreator {
 
-    /* .... переделать на PrioretyQueue с компаратором... реализовать компаратор так чтобы он добавлял в начало очереди машины с срочным грузом...
-       .... в класс Грузовик добавить поле "срочный груз" ....
-       ....!!!!!!!!!!  уточнить будет ли семафор работать с такой очередью, инфу в нете не нашел...
-     */
-
     private static final int NUMBER_OF_TRUCKS = ConfigurationManager.getProperty("number.of.truck");
+    private static final int TRUCK_MAX_CAPACITY = ConfigurationManager.getProperty("truck.max.capacity");
 
     public ArrayDeque<Truck> truckQueueCreator() {
         ArrayDeque<Truck> truckQueue = new ArrayDeque<>();
         for (int i = 0; i < NUMBER_OF_TRUCKS; i++) {
-            truckQueue.add(new Truck(IdTruckGenerator.generateId(), new GoToBase(), new Random().nextInt(2)));
+            truckQueue.add(new Truck(IdGenerator.generateIdTruck(), new GoToBase(), new Random().nextInt(4), TRUCK_MAX_CAPACITY));
         }
         return truckQueue;
     }

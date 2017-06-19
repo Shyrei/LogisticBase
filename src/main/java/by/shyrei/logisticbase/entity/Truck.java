@@ -1,7 +1,7 @@
 package by.shyrei.logisticbase.entity;
 
-import by.shyrei.logisticbase.exception.LogisticBaseResourсeException;
 import by.shyrei.logisticbase.truckstate.TrackState;
+
 
 /**
  * Project LogisticBase
@@ -9,19 +9,32 @@ import by.shyrei.logisticbase.truckstate.TrackState;
  * author Shyrei Uladzimir
  */
 public class Truck extends Thread {
+
+    private int goods;
+    private int maxCapacity;
     private long trackId;
     private TrackState trackState;
-    private int goods;
-    private Base base = Base.getInstance();
 
-    public Truck(long trackId, TrackState trackState, int goods) {
+
+    private static Base base = Base.getInstance();
+
+    public Truck(long trackId, TrackState trackState, int goods, int maxCapacity) {
+        this.goods = goods;
+        this.maxCapacity = maxCapacity;
         this.trackId = trackId;
         this.trackState = trackState;
-        this.goods = goods;
     }
 
     public int getGoods() {
         return goods;
+    }
+
+    public void setGoods(int goods) {
+        this.goods = goods;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
     }
 
     public void setTrackState(TrackState trackState) {
@@ -35,16 +48,13 @@ public class Truck extends Thread {
     @Override
     public void run() {
         Terminal terminal = null;
-        changeState();
         try {
             terminal = base.useTerminal();
+            changeState();
             if (terminal != null) {
                 terminal.terminalWork(this);
                 changeState();
             }
-        } catch (LogisticBaseResourсeException e) {
-            System.err.println(e.getMessage());
-            // use log
         } finally {
             if (terminal != null) {
                 base.leaveTerminal(terminal);
@@ -55,7 +65,9 @@ public class Truck extends Thread {
 
     @Override
     public String toString() {
-        return "Грузовик № " + trackId;
+        return "Грузовик № " + trackId + ", кол-во товара: " + goods + ", вместимость: " + maxCapacity;
+
+
     }
 }
 

@@ -1,10 +1,14 @@
 package by.shyrei.logisticbase.entity;
-
-import by.shyrei.logisticbase.exception.LogisticBaseResourсeException;
 import by.shyrei.logisticbase.service.ConfigurationManager;
-import by.shyrei.logisticbase.service.IdTerminalGenerator;
+import by.shyrei.logisticbase.service.IdGenerator;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayDeque;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -13,51 +17,76 @@ import java.util.concurrent.locks.ReentrantLock;
  * author Shyrei Uladzimir
  */
 public class Base {
+
+    private final static Logger logger = LogManager.getLogger(Base.class);
+
     private static Base instance;
+    private static AtomicBoolean createInstance = new AtomicBoolean(false);
+
     private static ReentrantLock lock = new ReentrantLock();
+
     private final ArrayDeque<Terminal> terminals = new ArrayDeque<>();
     private final Semaphore semaphore = new Semaphore(NUMBER_OF_TERMINALS, true);
+
     private static final int NUMBER_OF_TERMINALS = ConfigurationManager.getProperty("number.of.terminals");
+    private static final int MAX_CAPACITY = ConfigurationManager.getProperty("base.max.capacity");
+    private AtomicInteger baseGoods = new AtomicInteger(ConfigurationManager.getProperty("base.goods"));
 
-    private Base() {
-     /*   do {
+    // не получается обработать ошибку !!!! (((
 
-        } while (terminals.size() == NUMBER_OF_TERMINALS);*/
+    public Base() {
+        do {
+            terminals.add(new Terminal(IdGenerator.generateIdTerminal()));
+        } while (terminals.size() != NUMBER_OF_TERMINALS);
+    }
 
-        for (int i = 0; i < NUMBER_OF_TERMINALS; i++) {
-                try {
-                terminals.add(new Terminal(IdTerminalGenerator.generateId()));
-            } finally {
-                if (terminals.size() == 10) {
-
-                } else {
-                    // добавить необходимое количество terminals.add()
-                }
+   /* private Base() {
+        try {
+            do {
+                terminals.add(new Terminal(IdGenerator.generateIdTerminal()));
+            } while (terminals.size() != NUMBER_OF_TERMINALS);
+        } finally {
+            if (terminals.size() != NUMBER_OF_TERMINALS) {
+                terminals.add(new Terminal(111));
             }
         }
+    }*/
+
+    public AtomicInteger getBaseGoods() {
+        return baseGoods;
+    }
+
+    public void setBaseGoods(AtomicInteger baseGoods) {
+        this.baseGoods = baseGoods;
+    }
+
+    public static int getMaxCapacity() {
+        return MAX_CAPACITY;
     }
 
     public static Base getInstance() {
-        lock.lock();
-        try {
-            if (instance == null) {
-                instance = new Base();
+        if (!createInstance.get()) {
+            lock.lock();
+            try {
+                if (instance == null) {
+                    instance = new Base();
+                    createInstance.set(true);
+                }
+            } finally {
+                lock.unlock();
             }
-        } finally {
-            lock.unlock();
         }
         return instance;
     }
 
-    public Terminal useTerminal() throws LogisticBaseResourсeException {
+    public Terminal useTerminal() {
         Terminal terminal = null;
         try {
             lock.lock();
             semaphore.acquire();
             terminal = terminals.poll();
         } catch (InterruptedException e) {
-            // запись в лог + e.getMessage();
-            e.getMessage();
+            logger.log(Level.ERROR, e.getMessage());
         } finally {
             lock.unlock();
         }
@@ -66,7 +95,13 @@ public class Base {
 
     public void leaveTerminal(Terminal terminal) {
         terminals.push(terminal);
-        System.out.println("Терминал № " + terminal.getTerminalId() + " освободился."); // спросить надо ли менять на Logger
         semaphore.release();
+    }
+
+    @Override
+    public String toString() {
+        return "Base{" +
+                "baseGoods=" + baseGoods +
+                '}';
     }
 }

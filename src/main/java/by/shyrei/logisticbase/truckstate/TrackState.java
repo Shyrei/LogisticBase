@@ -1,5 +1,6 @@
 package by.shyrei.logisticbase.truckstate;
 
+import by.shyrei.logisticbase.entity.Terminal;
 import by.shyrei.logisticbase.entity.Truck;
 
 /**

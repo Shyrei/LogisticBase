@@ -1,5 +1,9 @@
 package by.shyrei.logisticbase.service;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -9,6 +13,8 @@ import java.util.ResourceBundle;
  * author Shyrei Uladzimir
  */
 public class ConfigurationManager {
+    
+    private final static Logger logger = LogManager.getLogger(ConfigurationManager.class);
     private final static ResourceBundle resourceBundle = ResourceBundle.getBundle("configuration");
 
     private ConfigurationManager() {
@@ -19,7 +25,7 @@ public class ConfigurationManager {
         try {
             value = Integer.parseInt(resourceBundle.getString(key));
         } catch (MissingResourceException e) {
-            // фатальная запись в лог
+            logger.log(Level.FATAL, e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
         return value;
