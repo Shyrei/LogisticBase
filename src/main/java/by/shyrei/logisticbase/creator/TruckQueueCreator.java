@@ -5,7 +5,8 @@ import by.shyrei.logisticbase.service.ConfigurationManager;
 import by.shyrei.logisticbase.service.IdGenerator;
 import by.shyrei.logisticbase.truckstate.GoToBase;
 
-import java.util.ArrayDeque;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 /**
@@ -18,10 +19,10 @@ public class TruckQueueCreator {
     private static final int NUMBER_OF_TRUCKS = ConfigurationManager.getProperty("number.of.truck");
     private static final int TRUCK_MAX_CAPACITY = ConfigurationManager.getProperty("truck.max.capacity");
 
-    public ArrayDeque<Truck> truckQueueCreator() {
-        ArrayDeque<Truck> truckQueue = new ArrayDeque<>();
+    public PriorityQueue<Truck> truckQueueCreator() {
+        PriorityQueue<Truck> truckQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.getPriorityGoods()));
         for (int i = 0; i < NUMBER_OF_TRUCKS; i++) {
-            truckQueue.add(new Truck(IdGenerator.generateIdTruck(), new GoToBase(), new Random().nextInt(4), TRUCK_MAX_CAPACITY));
+            truckQueue.add(new Truck(IdGenerator.generateIdTruck(), new GoToBase(), new Random().nextInt(4), TRUCK_MAX_CAPACITY, new Random().nextInt(2)));
         }
         return truckQueue;
     }

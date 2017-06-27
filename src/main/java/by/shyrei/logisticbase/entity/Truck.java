@@ -11,18 +11,18 @@ import by.shyrei.logisticbase.truckstate.TrackState;
 public class Truck extends Thread {
 
     private int goods;
+    private int priorityGoods;
     private int maxCapacity;
     private long trackId;
     private TrackState trackState;
-
-
     private static Base base = Base.getInstance();
 
-    public Truck(long trackId, TrackState trackState, int goods, int maxCapacity) {
+    public Truck(long trackId, TrackState trackState, int goods, int maxCapacity, int priorityGoods) {
         this.goods = goods;
         this.maxCapacity = maxCapacity;
         this.trackId = trackId;
         this.trackState = trackState;
+        this.priorityGoods = priorityGoods;
     }
 
     public int getGoods() {
@@ -31,6 +31,14 @@ public class Truck extends Thread {
 
     public void setGoods(int goods) {
         this.goods = goods;
+    }
+
+    public int getPriorityGoods() {
+        return priorityGoods;
+    }
+
+    public void setPriorityGoods(int priorityGoods) {
+        this.priorityGoods = priorityGoods;
     }
 
     public int getMaxCapacity() {
@@ -65,7 +73,7 @@ public class Truck extends Thread {
 
     @Override
     public String toString() {
-        return "Грузовик № " + trackId + ", кол-во товара: " + goods + ", вместимость: " + maxCapacity;
+        return "Грузовик № " + trackId + ", кол-во товара: " + goods + ", вместимость: " + maxCapacity + ", срочность: " + priorityGoods;
 
 
     }

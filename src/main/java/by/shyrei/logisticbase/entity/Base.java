@@ -1,4 +1,5 @@
 package by.shyrei.logisticbase.entity;
+
 import by.shyrei.logisticbase.service.ConfigurationManager;
 import by.shyrei.logisticbase.service.IdGenerator;
 import org.apache.logging.log4j.Level;
@@ -6,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayDeque;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,39 +31,17 @@ public class Base {
     private final Semaphore semaphore = new Semaphore(NUMBER_OF_TERMINALS, true);
 
     private static final int NUMBER_OF_TERMINALS = ConfigurationManager.getProperty("number.of.terminals");
-    private static final int MAX_CAPACITY = ConfigurationManager.getProperty("base.max.capacity");
     private AtomicInteger baseGoods = new AtomicInteger(ConfigurationManager.getProperty("base.goods"));
+    public static final int MAX_CAPACITY = ConfigurationManager.getProperty("base.max.capacity");
 
-    // не получается обработать ошибку !!!! (((
-
-    public Base() {
+    private Base() {
         do {
             terminals.add(new Terminal(IdGenerator.generateIdTerminal()));
         } while (terminals.size() != NUMBER_OF_TERMINALS);
     }
 
-   /* private Base() {
-        try {
-            do {
-                terminals.add(new Terminal(IdGenerator.generateIdTerminal()));
-            } while (terminals.size() != NUMBER_OF_TERMINALS);
-        } finally {
-            if (terminals.size() != NUMBER_OF_TERMINALS) {
-                terminals.add(new Terminal(111));
-            }
-        }
-    }*/
-
     public AtomicInteger getBaseGoods() {
         return baseGoods;
-    }
-
-    public void setBaseGoods(AtomicInteger baseGoods) {
-        this.baseGoods = baseGoods;
-    }
-
-    public static int getMaxCapacity() {
-        return MAX_CAPACITY;
     }
 
     public static Base getInstance() {
@@ -96,6 +76,10 @@ public class Base {
     public void leaveTerminal(Terminal terminal) {
         terminals.push(terminal);
         semaphore.release();
+    }
+
+    public void clearBase() {
+        getBaseGoods().set(new Random().nextInt(20) + 20);
     }
 
     @Override

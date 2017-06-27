@@ -1,6 +1,5 @@
 package by.shyrei.logisticbase.truckstate;
 
-import by.shyrei.logisticbase.entity.Terminal;
 import by.shyrei.logisticbase.entity.Truck;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +18,7 @@ public class LeaveBase implements TrackState {
 
     private final static Logger logger = LogManager.getLogger(LeaveBase.class);
     private static ReentrantLock lock = new ReentrantLock();
+
     @Override
     public void work(Truck truck) {
         try {

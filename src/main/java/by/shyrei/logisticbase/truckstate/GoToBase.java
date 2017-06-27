@@ -1,6 +1,5 @@
 package by.shyrei.logisticbase.truckstate;
 
-import by.shyrei.logisticbase.entity.Terminal;
 import by.shyrei.logisticbase.entity.Truck;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

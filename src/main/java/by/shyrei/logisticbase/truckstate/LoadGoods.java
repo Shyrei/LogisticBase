@@ -1,7 +1,6 @@
 package by.shyrei.logisticbase.truckstate;
 
 import by.shyrei.logisticbase.entity.Base;
-import by.shyrei.logisticbase.entity.Terminal;
 import by.shyrei.logisticbase.entity.Truck;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -27,13 +26,17 @@ public class LoadGoods implements TrackState {
 
         try {
             lock.lock();
-            if (base.getBaseGoods().get() > truck.getMaxCapacity()) {
-                base.getBaseGoods().set(base.getBaseGoods().intValue() - truck.getMaxCapacity());
-                truck.setGoods(truck.getMaxCapacity());
-                TimeUnit.SECONDS.sleep(1);
-                System.out.println(truck + " загрузился" + ", кол-во товара на базе :" + Base.getInstance().getBaseGoods());
-                truck.setTrackState(new LeaveBase());
+            if (base.getBaseGoods().get() < truck.getMaxCapacity()) {
+                System.out.println("Не хватает товара на базе - ожидается прибытие товара..." + base.getBaseGoods());
+                base.clearBase();
+                System.out.println("Товар на базе пополнен..." + base.getBaseGoods());
             }
+            base.getBaseGoods().set(base.getBaseGoods().intValue() - truck.getMaxCapacity());
+            truck.setGoods(truck.getMaxCapacity());
+            TimeUnit.SECONDS.sleep(1);
+            System.out.println(truck + " загрузился" + ", кол-во товара на базе :" + base.getBaseGoods());
+            truck.setTrackState(new LeaveBase());
+
         } catch (InterruptedException e) {
             logger.log(Level.ERROR, e.getMessage());
         } finally {
