@@ -42,6 +42,5 @@ public class Terminal {
     @Override
     public String toString() {
         return "Терминал № " + terminalId;
-
     }
 }

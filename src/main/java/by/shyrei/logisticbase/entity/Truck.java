@@ -74,8 +74,6 @@ public class Truck extends Thread {
     @Override
     public String toString() {
         return "Грузовик № " + trackId + ", кол-во товара: " + goods + ", вместимость: " + maxCapacity + ", срочность: " + priorityGoods;
-
-
     }
 }
 
