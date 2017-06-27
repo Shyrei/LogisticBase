@@ -34,7 +34,7 @@ public class UnloadGoods implements TrackState {
             base.getBaseGoods().set(base.getBaseGoods().intValue() + truck.getGoods());
             truck.setGoods(0);
             TimeUnit.SECONDS.sleep(1);
-            System.out.println(truck + " выгрузился" + ", кол-во товара на базе :" + Base.getInstance().getBaseGoods());
+            System.out.println(truck + " выгрузился" + ", кол-во товара на базе :" + base.getBaseGoods());
             truck.setTrackState(new LeaveBase());
 
         } catch (InterruptedException e) {
